@@ -23,3 +23,7 @@ Template SQL sequelize
 3- Creamos un archivo llamado .gitignore, el cual ignora node_modules y package-lock.json en los push
 
 4- Agregar contenido al index (código levantar el servidor) y ejecutar el script `npm run start`
+
+
+## Si cloné este repo:
+`npm install` o `npm i`
