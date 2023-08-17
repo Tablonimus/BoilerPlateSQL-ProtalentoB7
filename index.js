@@ -1,13 +1,40 @@
 const express = require("express");
+const cors = require("cors");
+const { Sequelize } = require("sequelize");
 const server = express(); //=> {}.get .post .use()
 const port = 3000; // en mi pc lo corro en el localhost:
-/* ---------------------------------------------------------------- */
+/* ------MIDDLEWARES---------------------------------------------------------- */
 /* middleware para aceptar jsons */
 /* paso1 = instalar con npm install body-parser */
 const bodyParser = require("body-parser");
 server.use(bodyParser.urlencoded({ extended: true, limit: "50mb" }));
 server.use(bodyParser.json({ limit: "50mb" }));
-/* --------------------------------------------------------------- */
+/* ----------------------CORS----------------------------------------- */
+server.use(cors());
+/*-------------SEQUELIZE--------------------------------------------------------*/
+/* VARIABLES DE ENTORNO */
+const USER_DB = "postgres";
+const PASS_DB = "1234";
+const HOST_DB = "localhost";
+const PORT_DB = "5432";
+const NAME_DB = "carStore";
+/* ------------------- */
+
+// const sequelize = new Sequelize('postgres://user:pass@example.com:5432/dbname')
+// const sequelize = new Sequelize('postgres://postgres:1234@localhost:5432/carStore')
+const sequelize = new Sequelize(
+  `postgres://${USER_DB}:${PASS_DB}@${HOST_DB}:${PORT_DB}/${NAME_DB}`
+);
+async function testConnection() {
+  try {
+    await sequelize.authenticate();
+    console.log("Estas conectado a la base de datos");
+  } catch (error) {
+    console.error("No es posible conectarse a la base de datos:", error);
+  }
+}
+
+testConnection();
 
 //1-CREAR UN ARRAY CON 10 PRODUCTOS Y AL MENOS 5 CLAVES
 let marketProducts = [
@@ -36,7 +63,7 @@ let marketProducts = [
 
 //2- HACER UN FILTRADO POR QUERY
 server.get("/product", (req, res) => {
-  //1- Filtrar por query los colores
+  //1- Filtrar por query los colores //
   //2- Filtrar por query los precios / maxPrice
   //3- Filtrar por query los stock
   try {
@@ -80,14 +107,16 @@ server.get("/product/:id", (req, res) => {
 server.post("/product", (req, res) => {
   try {
     let newProduct = req.body;
+
     console.log(newProduct);
-    res.send("Hello POST!"); //al body de nuestro cliente
+
+    res.status(200).json("producto creado correctamente"); //al body de nuestro cliente
   } catch (error) {
-    res.status(400).send("Error en la ruta post");
+    res.status(400).send("Error en crear producto");
   }
 });
 
-//5 - EDITAR UN PRODUCTO (EXTRA)
+//5 - EDITAR UN PRODUCTO POR BODY(EXTRA)
 server.patch("/product", (req, res) => {
   console.log("entrada a la ruta patch"); //se va a la consola
   res.send("Hello PATCH!"); //al body de nuestro cliente
