@@ -1,14 +1,9 @@
 const server = require("./src/server");
-const { conn } = require("./src/db");
-const { Product } = require("./src/models/Product");
-const port = 3000; // en mi pc lo corro en el localhost:
+const sequelize = require("./src/db");
+const SERVER_PORT = 3000;
 
-conn.sync().then(
-  server.listen(port, () => {
-    console.log(
-      `Esta corriendo el servidor correctamente en el puerto: ${port}`
-    );
+sequelize.sync({ force: true }).then(
+  server.listen(SERVER_PORT, () => {
+    console.log(`El servidor se inició correctamente en el puerto: ${SERVER_PORT}`);
   })
 );
-
-
