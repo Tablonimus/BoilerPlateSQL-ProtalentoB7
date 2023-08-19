@@ -1,59 +1,31 @@
 const { Router } = require("express");
 const router = Router(); //localhost:3000/product /crear
+const { Product, Category } = require("../db");
 
-//1-CREAR UN ARRAY CON 10 PRODUCTOS Y AL MENOS 5 CLAVES
-let marketProducts = [
-  {
-    id: 1,
-    name: "Ferrari 4 puertas",
-    color: "red",
-    price: 150,
-    stock: 25,
-  },
-  {
-    id: 2,
-    name: "Lamborgini Diablo",
-    color: "yellow",
-    price: 100,
-    stock: 5,
-  },
-  {
-    id: 3,
-    name: "Chevrolet Camaro",
-    color: "yellow",
-    price: 200,
-    stock: 10,
-  },
-];
-
-//2- HACER UN FILTRADO POR QUERY
-router.get("/", (req, res) => {
-  //1- Filtrar por query los colores //
-  //2- Filtrar por query los precios / maxPrice
-  //3- Filtrar por query los stock
+router.get("/", async (req, res) => {
+  console.log("Peticion iniciada en la ruta");
   try {
-    let color = req.query.color;
-    let maxPrice = req.query.price;
-    let stock = req.query.stock;
+    let allProducts = await Product.findAll({ include: { model: Category } });
 
-    if (color) {
-      let productFound = marketProducts.filter((car) => car.color === color);
-      res.status(202).json(productFound);
-    } else if (maxPrice) {
-      let productFound = marketProducts.filter((car) => car.price <= maxPrice);
-      res.status(202).json(productFound);
-    } else if (stock) {
-      let productFound = marketProducts.filter((car) => car.stock >= stock);
-      res.status(202).json(productFound);
-    } else {
-      res.status(202).json(marketProducts);
-    }
+    res.status(200).json(allProducts);
   } catch (error) {
-    console.log("ESTE ES EL ERROR QUE OCASIONA TODO=====> ", error);
-    res.status(404).json("NOT FOUND");
+    console.error(error);
+    res.status(400).send("Error buscando los productos");
   }
 });
-//3- HACER UNA BUSQUEDA POR PARAMS
+
+router.post("/", async (req, res) => {
+  try {
+    let body = req.body;
+    let category = await Category.findOne({ where: { title: body.category } });
+    let newProduct = await Product.create(body.newProduct);
+    await category.addProduct(newProduct);
+    res.status(200).json("Producto creado correctamente");
+  } catch (error) {
+    res.status(400).send("Error al crear el Producto");
+  }
+});
+
 router.get("/:id", (req, res) => {
   try {
     //1-Filtrar segun param de name
@@ -68,7 +40,6 @@ router.get("/:id", (req, res) => {
   }
 });
 
-//4- CREAR UN PRODUCTO CON DATOS POR BODY (EXTRA)
 router.post("/crear", (req, res) => {
   try {
     let newProduct = req.body;
@@ -81,12 +52,9 @@ router.post("/crear", (req, res) => {
   }
 });
 
-//5 - EDITAR UN PRODUCTO POR BODY(EXTRA)
 router.patch("/", (req, res) => {
   console.log("entrada a la ruta patch"); //se va a la consola
   res.send("Hello PATCH!"); //al body de nuestro cliente
 });
-
-
 
 module.exports = router;

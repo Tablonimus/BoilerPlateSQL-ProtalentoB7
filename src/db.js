@@ -31,7 +31,9 @@ console.log(sequelize.models);
 /* Hacemos un destructuring y podemos hacer las relaciones */
 const { Product, Category } = sequelize.models;
 /* aca van las relaciones */
-
+/* Relacion uno a muchos donde A = Category B= Product */
+Category.hasMany(Product)
+Product.belongsTo(Category)
 
 /* Exporto sequelize y modelos */
 module.exports = { sequelize, ...sequelize.models };
