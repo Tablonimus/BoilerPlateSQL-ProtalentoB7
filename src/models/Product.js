@@ -1,5 +1,9 @@
 const { DataTypes } = require("sequelize");
 //⚠ SE EXPORTA UNA FUNCIÓN A db.js QUE RECIBIRÁ SEQUELIZE COMO ARGUMENTO Y CONECTARÁ
+
+/* Inicio una instancia de sequelize y conecto con la base de datos */
+
+
 module.exports = (sequelize) => {
   sequelize.define(
     "Product",

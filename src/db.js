@@ -1,6 +1,7 @@
 const { Sequelize } = require("sequelize");
-const Product = require("./models/Product");
-const Category = require("./models/Category");
+
+const ProductModel = require("./models/Product");
+const CategoryModel = require("./models/Category");
 // ⚠ IMPORTO LA FUNCION DEL MODELO PARA SINCRONIZAR Y EVITAR MULTIPLES NEW SEQUELIZE EN CADA ARCHIVO
 
 /* VARIABLES DE ENTORNO */
@@ -20,8 +21,17 @@ const sequelize = new Sequelize(
 );
 
 /* Aquí ejecuto la función importada de cada modelo y paso sequelize como argumento */
-Product(sequelize);
-Category(sequelize);
+ProductModel(sequelize);
+CategoryModel(sequelize);
 
-/* Exporto sequelize */
-module.exports = sequelize;
+/* ¿como me doy cuenta si se conectaron los modelos correctamente? */
+/* Aqui tenemos los modelos guardados luego de sincronizarlos */
+console.log(sequelize.models);
+
+/* Hacemos un destructuring y podemos hacer las relaciones */
+const { Product, Category } = sequelize.models;
+/* aca van las relaciones */
+
+
+/* Exporto sequelize y modelos */
+module.exports = { sequelize, ...sequelize.models };

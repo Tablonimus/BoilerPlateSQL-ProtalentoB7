@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const router = Router(); //localhost:3000/product
+const router = Router(); //localhost:3000/product /crear
 
 //1-CREAR UN ARRAY CON 10 PRODUCTOS Y AL MENOS 5 CLAVES
 let marketProducts = [
@@ -69,7 +69,7 @@ router.get("/:id", (req, res) => {
 });
 
 //4- CREAR UN PRODUCTO CON DATOS POR BODY (EXTRA)
-router.post("/", (req, res) => {
+router.post("/crear", (req, res) => {
   try {
     let newProduct = req.body;
 
@@ -86,5 +86,7 @@ router.patch("/", (req, res) => {
   console.log("entrada a la ruta patch"); //se va a la consola
   res.send("Hello PATCH!"); //al body de nuestro cliente
 });
+
+
 
 module.exports = router;
